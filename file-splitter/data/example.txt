@@ -1,0 +1,4 @@
+This is a example of a bool
+A multiline test of sort
+Testing for reading, breaking up and writing this arbitrary text
+Now this text test and works with anything
