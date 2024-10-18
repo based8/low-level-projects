@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 
-int main(int argc, char *argv) {
+int main() {
 	int ifd;
 	int ofd[3];
 	int length = sizeof(ofd) / sizeof(int);
@@ -17,25 +17,30 @@ int main(int argc, char *argv) {
 		perror("could not open input file");
 		return 0;
 	}
-	if ((read(ifd, strbuff, sizeof(strbuff))) == -1){
-		perror("could not read input file into buffer");
-		return 0;
-	}
+    if ((read(ifd, strbuff, sizeof(strbuff))) == -1){
+        perror("could not read input into buffer");
+        return 0;
+    }
+
     fsize = lseek(ifd, 0, SEEK_END) - 3;
-    printf("size of file is: %i", fsize);
-	printf("\n\n %s \n\n", strbuff);
-    
-	for (int i; i < length; i++)
+    printf("size of file is: %i bytes %i \n ", fsize);
+
+	for (int i = 0; i < length; i++)
 	{
 		namebuff[4] = i + '0';
 		if ((ofd[i] = open(namebuff, O_CREAT | O_RDWR )) == -1){
 			perror("could not create file");
-			break;
+			continue;
 		}
-		printf("Opened fd: %d, path: ",ofd[i]);
-		printf("%s \n", namebuff);
+        char* strpart = malloc((fsize/length) * sizeof(char));
+        if (!(memcpy(strpart, namebuff, sizeof(namebuff)))){
+            perror("memory allocation failed");
+            return 0;
+        }
+
+		printf("Opened fd: %d, path: %s \n",ofd[i], namebuff);
 	}
-	for (int i; i < length; i++)
+	for (int i = 0; i < length; i++)
 	{
 		close(ofd[i]);
 		printf("Closed fd: %i \n", ofd[i]);
