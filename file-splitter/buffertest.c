@@ -5,24 +5,24 @@
 #include <stdint.h>
 #include <string.h>
 
-int main() {
+int main(int argc, char *argv) {
 	int ifd;
 	int ofd[3];
 	int length = sizeof(ofd) / sizeof(int);
-	char strbuff[1024]; 
 	char namebuff[64] = {'o','u','t','p'};
-    char* ptr;
+    char strbuff[1024];
+    off_t fsize;    
 
 	if ((ifd = open("data/example.txt", O_RDONLY)) == -1){
 		perror("could not open input file");
 		return 0;
 	}
 	if ((read(ifd, strbuff, sizeof(strbuff))) == -1){
-		perror("could not read input file");
+		perror("could not read input file into buffer");
 		return 0;
 	}
-    ptr = (char*)malloc((sizeof(strbuff) / sizeof(char)) * sizeof(char));
-    printf("%c \n", ptr);
+    fsize = lseek(ifd, 0, SEEK_END) - 3;
+    printf("size of file is: %i", fsize);
 	printf("\n\n %s \n\n", strbuff);
     
 	for (int i; i < length; i++)
@@ -30,7 +30,7 @@ int main() {
 		namebuff[4] = i + '0';
 		if ((ofd[i] = open(namebuff, O_CREAT | O_RDWR )) == -1){
 			perror("could not create file");
-			return 0;
+			break;
 		}
 		printf("Opened fd: %d, path: ",ofd[i]);
 		printf("%s \n", namebuff);
