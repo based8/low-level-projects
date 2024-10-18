@@ -34,7 +34,9 @@ int main() {
 			perror("could not create file");
 			continue;
 		}
-		printf("Opened fd: %d \n",ofd[i]);
+		printf("Opened fd: %i \n",ofd[i]);
+        
+        
 
         char* strpart = malloc((fsize/length) * sizeof(char));
         if (!(memcpy(strpart, strbuff + split, (fsize/length) * sizeof(char)))){
@@ -46,7 +48,8 @@ int main() {
 		    printf("CONTINUING!!");
             continue;
         }
-        split += fsize/length;
+		printf("fsize: %i, partsize: %i, mallocated: %i, split: %i",fsize, fsize/length, sizeof(*strpart), sizeof(split) );
+        split += length;
         free(strpart);
   	}
 
