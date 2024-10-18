@@ -23,7 +23,9 @@ int main() {
     }
 
     fsize = lseek(ifd, 0, SEEK_END) - 3;
-    printf("size of file is: %i bytes %i \n ", fsize);
+    printf("%s \n\n size of file is: %i bytes \n ", strbuff, fsize);
+
+    int split = 0;
 
 	for (int i = 0; i < length; i++)
 	{
@@ -32,14 +34,22 @@ int main() {
 			perror("could not create file");
 			continue;
 		}
+		printf("Opened fd: %d \n",ofd[i]);
+
         char* strpart = malloc((fsize/length) * sizeof(char));
-        if (!(memcpy(strpart, namebuff, sizeof(namebuff)))){
+        if (!(memcpy(strpart, strbuff + split, (fsize/length) * sizeof(char)))){
             perror("memory allocation failed");
             return 0;
         }
+        if ((write(ofd[i], strpart, sizeof(strpart))) == -1){
+            perror("could not write to file");
+		    printf("CONTINUING!!");
+            continue;
+        }
+        split += fsize/length;
+        free(strpart);
+  	}
 
-		printf("Opened fd: %d, path: %s \n",ofd[i], namebuff);
-	}
 	for (int i = 0; i < length; i++)
 	{
 		close(ofd[i]);
