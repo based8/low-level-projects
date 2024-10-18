@@ -1,7 +1,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 
 int main() {
 	int ifd;
@@ -9,6 +11,7 @@ int main() {
 	int length = sizeof(ofd) / sizeof(int);
 	char strbuff[1024]; 
 	char namebuff[64] = {'o','u','t','p'};
+    char* ptr;
 
 	if ((ifd = open("data/example.txt", O_RDONLY)) == -1){
 		perror("could not open input file");
@@ -18,7 +21,10 @@ int main() {
 		perror("could not read input file");
 		return 0;
 	}
+    ptr = (char*)malloc((sizeof(strbuff) / sizeof(char)) * sizeof(char));
+    printf("%c \n", ptr);
 	printf("\n\n %s \n\n", strbuff);
+    
 	for (int i; i < length; i++)
 	{
 		namebuff[4] = i + '0';
