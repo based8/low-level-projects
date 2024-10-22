@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+// Byte sizes of different data types
+
 int main(int argc, char* argv){
     printf("Integer, %i bytes \n", sizeof(int));
     printf("Double, %i bytes \n", sizeof(double));

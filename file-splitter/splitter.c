@@ -5,9 +5,10 @@
 #include <stdint.h>
 #include <string.h>
 
-int main() {
+int main(int argc, char *argv[]) {
+    printf("%i, %i \n",argc, *argv[1]);
 	int ifd;
-	int ofd[3];
+	int ofd[*argv[1] - 48];
 	int length = sizeof(ofd) / sizeof(int);
 	char namebuff[64] = {'o','u','t','p','x','.','t','x','t'};
     char strbuff[1024];
@@ -22,7 +23,7 @@ int main() {
         return 0;
     }
 
-    fsize = lseek(ifd, 0, SEEK_END) - 3;
+    fsize = lseek(ifd, 0, SEEK_END) + 1;
 
     int split = 0;
 
