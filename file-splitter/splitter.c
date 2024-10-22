@@ -9,7 +9,7 @@ int main() {
 	int ifd;
 	int ofd[3];
 	int length = sizeof(ofd) / sizeof(int);
-	char namebuff[64] = {'o','u','t','p'};
+	char namebuff[64] = {'o','u','t','p','x','.','t','x','t'};
     char strbuff[1024];
     off_t fsize;    
 
@@ -23,40 +23,32 @@ int main() {
     }
 
     fsize = lseek(ifd, 0, SEEK_END) - 3;
-    printf("%s \n\n size of file is: %i bytes \n ", strbuff, fsize);
 
     int split = 0;
 
 	for (int i = 0; i < length; i++)
 	{
 		namebuff[4] = i + '0';
-		if ((ofd[i] = open(namebuff, O_CREAT | O_RDWR )) == -1){
+		if ((ofd[i] = open(namebuff, O_CREAT | O_RDWR , S_IRWXU)) == -1){
 			perror("could not create file");
 			continue;
 		}
 		printf("Opened fd: %i \n",ofd[i]);
-        
-        
 
-        char* strpart = malloc((fsize/length) * sizeof(char));
-        if (!(memcpy(strpart, strbuff + split, (fsize/length) * sizeof(char)))){
+        char* strpart = malloc(10 * sizeof(char));
+        if (!(memcpy(strpart, strbuff + split,(fsize/length) * sizeof(char)))){
             perror("memory allocation failed");
             return 0;
         }
-        if ((write(ofd[i], strpart, sizeof(strpart))) == -1){
+        printf("\n \" %s \" \n\n", strpart);
+        if ((write(ofd[i], strpart, sizeof(char) * (fsize/length))) == -1){
             perror("could not write to file");
-		    printf("CONTINUING!!");
+		    printf("CONTINUING!!\n");
             continue;
         }
-		printf("fsize: %i, partsize: %i, mallocated: %i, split: %i",fsize, fsize/length, sizeof(*strpart), sizeof(split) );
-        split += length;
+        split += fsize/length;
         free(strpart);
-  	}
-
-	for (int i = 0; i < length; i++)
-	{
 		close(ofd[i]);
-		printf("Closed fd: %i \n", ofd[i]);
-	}
+  	}
 }
 
